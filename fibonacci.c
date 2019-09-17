@@ -2,32 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-// METHOD 1: ONLY WORKS UP TO 94th Fibonacci number because of 
-// unsigned long long int overflows at 18 446 744 073 709 551 615.
+// incrase string length to be able to store more fibonacci numbers
 
-/* int main() {
-	int i = 0;
-	unsigned long long int f1 = 0;
-	unsigned long long int f2 = 1;
-	unsigned long long int f;
-	printf("1: %llu\n", f1);
-	printf("2: %llu\n", f2);
-
-	while (i < 98) {
-		f = f1 + f2;
-		printf("%d: %llu\n", i+3, f);
-		f1 = f2;
-		f2 = f;
-		i++;
-	}
-	return 0;
-}
-*/
-
-// METHOD 2: WORKS UP TO 1218th Fibnocci number
-
-#define LENGTH 255
-#define FIB_NUMBS 1218 // MAX is 1218
+#define LENGTH 20900 // rule of thumb, LENGTH should be around 22% of FIB_NUMBS for efficiency any less will overflow
+#define FIB_NUMBS 100000
+#define PRINT_INTERVAL 10000 // if this is too low, and the FIB_NUMBS is high, your ram will get filled up really quickly 
+							 // since the terminal output is saved to ram
 
 void populate(char* str){
 	int i = LENGTH - 1;
@@ -68,23 +48,26 @@ char* printclean(char* str, char* res) {
 }
 
 int main() {
+
 	int i = 0;
 
 	char* f1 = malloc(sizeof(char)*LENGTH);
 	populate(f1);
 	f1[LENGTH - 1] = '1';
-	printf("1: 1\n");
+	printf("\n 1: 1\n\n");
 	char* f2 = malloc(sizeof(char)*LENGTH);
 	populate(f2);
 	f2[LENGTH - 1] = '1';
-	printf("2: 1\n");
+	printf(" 2: 1\n\n");
 	char* f;
 	char* print = malloc(sizeof(char)*LENGTH);
 	while (i < FIB_NUMBS - 2) {
 		f = malloc(sizeof(char)*LENGTH);
 		populate(f);
 		summ(f1, f2, f);
-		printf("%d: %s\n", i+3, printclean(f, print));
+		if (((i+3) % PRINT_INTERVAL) == 0) {
+			printf(" %d: %s\n\n", i+3, printclean(f, print));
+		}
 		free(f1);
 		f1 = f2;
 		f2 = f;
